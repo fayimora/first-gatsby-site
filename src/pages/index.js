@@ -1,4 +1,6 @@
 import * as React from "react"
+import { RichText } from "prismic-reactjs"
+import { graphql } from 'gatsby'
 
 // styles
 const pageStyles = {
@@ -126,10 +128,16 @@ const links = [
 ]
 
 // markup
-const IndexPage = () => {
+const IndexPage = ({ data }) => {
+  if (!data) return null;
+  const doc = data.allPrismicPost.edges[0].node.data;
+
   return (
     <main style={pageStyles}>
       <title>Home Page</title>
+      <p style={paragraphStyles}>
+        {doc.title.text} -- {doc.description.text}
+      </p>
       <h1 style={headingStyles}>
         Congratulations
         <br />
@@ -180,5 +188,24 @@ const IndexPage = () => {
     </main>
   )
 }
+
+export const query = graphql`
+  query IndexPage{
+  allPrismicPost {
+    edges {
+      node {
+        data {
+          title {
+            text
+          }
+          description {
+            text
+          }
+        }
+      }
+    }
+  }
+}
+`
 
 export default IndexPage
